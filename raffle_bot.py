@@ -152,6 +152,8 @@ async def on_ready():
 # - must specify a raffle ID
 # 'run' => conducts any raffle that hasn't been done yet
 # - no subcommands
+# 'add' => adds a user to a raffle
+# - must specify a raffle ID
 @client.event
 async def on_message(message: discord.Message):
     if message.author == client.user:
@@ -195,34 +197,40 @@ async def on_message(message: discord.Message):
                         await client.send_message(channel, 'New Raffle => (%s)' % new_raffle)
                 pass
             elif message_items[1] == 'delete':
-                # if we are trying to delete a raffle, we must supply the ID of the raffle
-                # first check validity of the argument
-                id_arg: str = message_items[2]
-                if id_arg.isdigit():
-                    search_id = int(id_arg)
-                    raffle_list_size_before = len(raffles)
-                    # https://stackoverflow.com/questions/1207406/remove-items-from-a-list-while-iterating
-                    raffles[:] = [raffle for raffle in raffles if raffle_id_matches(search_id, raffle)]
-                    raffle_list_size_after = len(raffles)
-                    if raffle_list_size_before > raffle_list_size_after:
-                        await client.send_message(channel, 'Deleted raffle with ID = %d' % search_id)
-                    else:
-                        await client.send_message(channel, no_raffle_found_with_id(search_id))
-                else:
+                if len(message_items) < 3:
                     await client.send_message(channel, delete_raffle_usage_message())
-            elif message_items[1] == 'details':
-                # if we are trying to list the details of a raffle, we must supply the ID of the raffle
-                # check validity of the argument
-                id_arg: str = message_items[2]
-                if id_arg.isdigit():
-                    search_id = int(id_arg)
-                    found_raffle: Raffle = get_raffle_by_id(search_id)
-                    if found_raffle is not None:
-                        await client.send_message(channel, found_raffle.raffle_details())
-                    else:
-                        await client.send_message(channel, no_raffle_found_with_id(search_id))
                 else:
+                    # if we are trying to delete a raffle, we must supply the ID of the raffle
+                    # first check validity of the argument
+                    id_arg: str = message_items[2]
+                    if id_arg.isdigit():
+                        search_id = int(id_arg)
+                        raffle_list_size_before = len(raffles)
+                        # https://stackoverflow.com/questions/1207406/remove-items-from-a-list-while-iterating
+                        raffles[:] = [raffle for raffle in raffles if raffle_id_matches(search_id, raffle)]
+                        raffle_list_size_after = len(raffles)
+                        if raffle_list_size_before > raffle_list_size_after:
+                            await client.send_message(channel, 'Deleted raffle with ID = %d' % search_id)
+                        else:
+                            await client.send_message(channel, no_raffle_found_with_id(search_id))
+                    else:
+                        await client.send_message(channel, delete_raffle_usage_message())
+            elif message_items[1] == 'details':
+                if len(message_items) < 3:
                     await client.send_message(channel, details_raffle_usage_message())
+                else:
+                    # if we are trying to list the details of a raffle, we must supply the ID of the raffle
+                    # check validity of the argument
+                    id_arg: str = message_items[2]
+                    if id_arg.isdigit():
+                        search_id = int(id_arg)
+                        found_raffle: Raffle = get_raffle_by_id(search_id)
+                        if found_raffle is not None:
+                            await client.send_message(channel, found_raffle.raffle_details())
+                        else:
+                            await client.send_message(channel, no_raffle_found_with_id(search_id))
+                    else:
+                        await client.send_message(channel, details_raffle_usage_message())
             elif message_items[1] == 'run':
                 # we want to run all of the available raffles for today
                 # this means we want to check all raffles before TOMORROW
@@ -230,6 +238,9 @@ async def on_message(message: discord.Message):
                 for raffle in raffles:
                     if raffle.date_of_raffle < tomorrow and not raffle.is_completed:
                         raffle.conduct_raffle()
+            elif message_items[1] == 'add':
+                # we want to add this user to a given raffle
+                pass
             else:
                 await client.send_message(channel, raffle_help_message())
 
