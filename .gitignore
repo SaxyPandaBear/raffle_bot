@@ -1,0 +1,3 @@
+# discord_token.py holds our bot's client token and we don't want to share that
+discord_token.py
+.idea
