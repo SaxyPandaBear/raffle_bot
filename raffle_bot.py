@@ -27,8 +27,8 @@ class Ticket:
     def get_id(self):
         return self.user.id
 
-    def get_username(self):
-        return self.user.display_name
+    def get_user(self):
+        return self.user
 
 
 class Raffle:
@@ -44,7 +44,7 @@ class Raffle:
         self.tickets = []
         self.date_of_raffle = date
         self.is_completed = False
-        self.winner = None  # Discord user Display Name
+        self.winner = None  # Discord User
 
     # get_number_of_tickets() lets us know how many users have entered this raffle
     def get_number_of_tickets(self):
@@ -73,7 +73,7 @@ class Raffle:
         else:
             index = random.randrange(len(self.tickets))
             random.shuffle(self.tickets)
-            self.winner = (self.tickets[index]).get_username()
+            self.winner = (self.tickets[index]).get_user()
             self.is_completed = True
             return True
 
@@ -237,7 +237,7 @@ async def on_message(message: discord.Message):
                         raffle.conduct_raffle()
                         # print out the winner of each raffle to the channel
                         await client.send_message(channel, str(raffle))
-                        await client.send_message(message.author, raffle_winner(raffle))
+                        await client.send_message(raffle.winner, raffle_winner(raffle))
                 await client.send_message(channel, '%d raffles completed' % number_of_raffles_completed)
             elif message_items[1] == 'add':
                 # we want to add this user to a given raffle
