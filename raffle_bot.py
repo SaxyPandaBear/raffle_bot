@@ -302,11 +302,11 @@ def add_to_raffle_usage_message():
     return 'Add Raffle usage: !raffle add ID'
 
 
-def no_raffle_found_with_id(some_id):
+def no_raffle_found_with_id(some_id: int):
     return 'No raffle found with ID = %d' % some_id
 
 
-def added_to_raffle(user, id_of_raffle):
+def added_to_raffle(user: discord.User, id_of_raffle: int):
     return 'Added %s to Raffle(%d)' % (str(user), id_of_raffle)
 
 
