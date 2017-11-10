@@ -15,7 +15,7 @@ def get_raffle_id():
 
 
 class Ticket:
-    def __init__(self, discord_user: discord.Member):
+    def __init__(self, discord_user: discord.User):
         self.user = discord_user
 
     def __str__(self):
