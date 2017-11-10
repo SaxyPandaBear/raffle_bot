@@ -108,13 +108,13 @@ pattern = re.compile('[0-3]?[0-9]/[0-3]?[0-9]/20[1-2][0-9]')
 # returns a new raffle object
 # assumes that the date string is formatted mm/dd/yyyy
 # let user input handler deal with invalid input
-async def get_new_raffle(description: str, date_of_raffle: str):
+def get_new_raffle(description: str, date_of_raffle: str):
     date_parts = date_of_raffle.split("/")  # '/' char is the delimiter
     year = int(date_parts[2])
     month = int(date_parts[0])
     day = int(date_parts[1])
     date = datetime.date(year, month, day)
-    await Raffle(description, date)
+    return Raffle(description, date)
 
 
 # compares an ID to a given Raffle to see if the ID's match
@@ -124,11 +124,11 @@ def raffle_id_matches(search_id: int, raffle: Raffle):
 
 # searches through the raffles list to get a given Raffle based on ID
 # returns None if it does not exist
-async def get_raffle_by_id(search_id: int):
+def get_raffle_by_id(search_id: int):
     for raffle in raffles:
         if raffle_id_matches(search_id, raffle):
-            await raffle
-    await None
+            return raffle
+    return None
 
 
 @client.event
@@ -235,9 +235,12 @@ async def on_message(message: discord.Message):
                 # we want to run all of the available raffles for today
                 # this means we want to check all raffles before TOMORROW
                 tomorrow: datetime.date = datetime.date.today() + datetime.timedelta(days=1)
+                number_of_raffles_completed = 0
                 for raffle in raffles:
                     if raffle.date_of_raffle < tomorrow and not raffle.is_completed:
+                        number_of_raffles_completed += 1
                         raffle.conduct_raffle()
+                await client.send_message(channel, '%d raffles completed' % number_of_raffles_completed)
             elif message_items[1] == 'add':
                 # we want to add this user to a given raffle
                 # check if an ID is given for a valid raffle
