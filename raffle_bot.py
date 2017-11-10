@@ -306,8 +306,8 @@ def no_raffle_found_with_id(some_id):
     return 'No raffle found with ID = %d' % some_id
 
 
-def added_to_raffle(user, id):
-    return 'Added %s to Raffle(%d)' % (str(user), id)
+def added_to_raffle(user, id_of_raffle):
+    return 'Added %s to Raffle(%d)' % (str(user), id_of_raffle)
 
 
 def raffle_winner(raffle: Raffle):
