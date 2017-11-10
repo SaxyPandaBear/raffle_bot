@@ -240,7 +240,22 @@ async def on_message(message: discord.Message):
                         raffle.conduct_raffle()
             elif message_items[1] == 'add':
                 # we want to add this user to a given raffle
-                pass
+                # check if an ID is given for a valid raffle
+                if len(message_items) < 3:
+                    await client.send_message(channel, add_to_raffle_usage_message())
+                else:
+                    id_arg: str = message_items[2]
+                    if id_arg.isdigit():
+                        search_id = int(id_arg)
+                        found_raffle: Raffle = get_raffle_by_id(search_id)
+                        if found_raffle is not None:
+                            ticket = Ticket(message.author)
+                            found_raffle.add_ticket(ticket)
+                            await client.send_message(channel, '%s added to raffle (%d)' % (str(message.author), found_raffle.id))
+                        else:
+                            await client.send_message(channel, no_raffle_found_with_id(search_id))
+                    else:
+                        await client.send_message(channel, add_to_raffle_usage_message())
             else:
                 await client.send_message(channel, raffle_help_message())
 
@@ -280,6 +295,10 @@ def delete_raffle_usage_message():
 
 def details_raffle_usage_message():
     return 'Details Raffle usage: !raffle details ID'
+
+
+def add_to_raffle_usage_message():
+    return 'Add Raffle usage: !raffle add ID'
 
 
 def no_raffle_found_with_id(some_id):
