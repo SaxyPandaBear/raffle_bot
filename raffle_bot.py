@@ -184,15 +184,10 @@ async def on_message(message: discord.Message):
                         await client.send_message(channel, 'Date should be formatted MM/DD/YYYY')
                     if date_is_validated:
                         # no need for an else clause because if it wasn't validated, the except block catches that
-                        parts_of_date = date_param.split('/')
-                        year = int(parts_of_date[2])
-                        month = int(parts_of_date[0])
-                        day = int(parts_of_date[1])
-                        date_of_raffle = datetime.date(year, month, day)
                         # now we need to extract the reward description from the rest of the message contents
                         # len("!raffle new mm/dd/yyyy " = 23
                         reward: str = message.content[23:]
-                        new_raffle = Raffle(reward, date_of_raffle)
+                        new_raffle = get_new_raffle(reward, date_param)
                         raffles.append(new_raffle)
                         await client.send_message(channel, 'New Raffle => (%s)' % new_raffle)
                 pass
