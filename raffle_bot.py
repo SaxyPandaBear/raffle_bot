@@ -240,6 +240,7 @@ async def on_message(message: discord.Message):
                     if raffle.date_of_raffle < tomorrow and not raffle.is_completed:
                         number_of_raffles_completed += 1
                         raffle.conduct_raffle()
+                        await client.send_message(channel, str(raffle))  # print out the winner of each raffle
                 await client.send_message(channel, '%d raffles completed' % number_of_raffles_completed)
             elif message_items[1] == 'add':
                 # we want to add this user to a given raffle
