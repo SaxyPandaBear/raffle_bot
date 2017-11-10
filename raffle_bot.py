@@ -240,7 +240,9 @@ async def on_message(message: discord.Message):
                     if raffle.date_of_raffle < tomorrow and not raffle.is_completed:
                         number_of_raffles_completed += 1
                         raffle.conduct_raffle()
-                        await client.send_message(channel, str(raffle))  # print out the winner of each raffle
+                        # print out the winner of each raffle to the channel
+                        await client.send_message(channel, str(raffle))
+                        await client.send_message(message.author, raffle_winner(raffle))
                 await client.send_message(channel, '%d raffles completed' % number_of_raffles_completed)
             elif message_items[1] == 'add':
                 # we want to add this user to a given raffle
@@ -255,7 +257,7 @@ async def on_message(message: discord.Message):
                         if found_raffle is not None:
                             ticket = Ticket(message.author)
                             found_raffle.add_ticket(ticket)
-                            await client.send_message(channel, '%s added to raffle (%d)' % (str(message.author), found_raffle.id))
+                            await client.send_message(channel, added_to_raffle(message.author, search_id))
                         else:
                             await client.send_message(channel, no_raffle_found_with_id(search_id))
                     else:
@@ -307,6 +309,14 @@ def add_to_raffle_usage_message():
 
 def no_raffle_found_with_id(some_id):
     return 'No raffle found with ID = %d' % some_id
+
+
+def added_to_raffle(user, id):
+    return 'Added %s to Raffle(%d)' % (str(user), id)
+
+
+def raffle_winner(raffle: Raffle):
+    return 'Congratulations, you won %s' % raffle.reward_description
 
 
 token = discord_token.token
