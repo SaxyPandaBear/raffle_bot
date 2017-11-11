@@ -1,1 +1,0 @@
-cmd: python raffle_bot.py
