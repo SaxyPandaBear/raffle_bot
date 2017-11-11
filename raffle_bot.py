@@ -252,7 +252,7 @@ async def on_message(message: discord.Message):
                         if found_raffle is not None:
                             ticket = Ticket(message.author)
                             found_raffle.add_ticket(ticket)
-                            await client.send_message(channel, added_to_raffle(message.author, search_id))
+                            await client.send_message(channel, added_to_raffle(message.author, found_raffle))
                         else:
                             await client.send_message(channel, no_raffle_found_with_id(search_id))
                     else:
@@ -306,12 +306,12 @@ def no_raffle_found_with_id(some_id: int):
     return 'No raffle found with ID = %d' % some_id
 
 
-def added_to_raffle(user: discord.User, id_of_raffle: int):
-    return 'Added %s to Raffle(%d)' % (str(user), id_of_raffle)
+def added_to_raffle(user: discord.User, raffle: Raffle):
+    return '%s entered for a chance to win %s' % (str(user), raffle.reward_description)
 
 
 def raffle_winner(raffle: Raffle):
-    return 'Congratulations, you won %s' % raffle.reward_description
+    return 'Congratulations, you won [%s]' % raffle.reward_description
 
 
 token = discord_token.token
