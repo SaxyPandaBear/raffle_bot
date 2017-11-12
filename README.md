@@ -5,7 +5,7 @@ A simple Discord bot made to handle raffles in a given server.
 
 ### Setup
 
-- Written in Python 3.5+
+- Written in Python 3.6.3
 - Uses [discord.py v0.16.12](https://github.com/Rapptz/discord.py)
 - [Create a client bot and get a token](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token)
 - In a file called `discord_token.py`, place your client token in there (see template)
